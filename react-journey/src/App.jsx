@@ -135,10 +135,14 @@ function App() {
         } else {
           console.log("Fetch failed", error);
         }
+      } finally { //shows loading unntil fully fetched and doesnt show blank screen
+        if(!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     }
     fetchProducts();
-    setIsLoading(false);
+    // setIsLoading(false); instantly goes off even after 1-2 products loaded and sshows a blank screen before rendering UI
     return () => {
       controller.abort();
     };
