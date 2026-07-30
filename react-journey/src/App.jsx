@@ -115,12 +115,14 @@ function App() {
   //   };
   // }, []);
 
+  const [isLoading, setIsLoading] = useState(true);
   // async await method
   useEffect(() => {
     const controller = new AbortController();
 
     async function fetchProducts() {
       try {
+        setIsLoading(true);
         const response = await fetch(`${url}/products`, {
           signal: controller.signal,
         });
@@ -136,13 +138,41 @@ function App() {
       }
     }
     fetchProducts();
+    setIsLoading(false);
     return () => {
       controller.abort();
-    }
+    };
   }, []);
 
   return (
     <>
+      {/* render api products */}
+      <h3>API Products</h3>
+      {isLoading ? (
+        <div style={{ textAlign: "center", padding: "40px", fontSize: "24px" }}>
+          <div className="spinner"></div>
+          <p>Loading products...</p>
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            alignItems: "center",
+          }}
+        >
+          {apiProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              image={product.image}
+              title={product.title}
+              price={product.price}
+              category={product.category}
+            />
+          ))}
+        </div>
+      )}
+      <br /> <br />
       <h1>{count}</h1>
       <div>
         <button onClick={() => decrement()}> - </button>
@@ -181,25 +211,6 @@ function App() {
         Toggle
       </button>
       <br />
-      {/* render api products */}
-      <h3>API Products</h3>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          alignItems: "center",
-        }}
-      >
-        {apiProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            image={product.image}
-            title={product.title}
-            price={product.price}
-            category={product.category}
-          />
-        ))}
-      </div>
     </>
   );
 }
