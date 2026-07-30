@@ -43,6 +43,7 @@ function App() {
     <>
       <h1>{count}</h1>
       <div>
+        <button onClick={() => decrement()}> - </button>
         <button onClick={() => increment(1)}> +1 </button>
         <button onClick={() => increment(5)}> +5</button>
         <button onClick={() => increment(10)}> +10</button>
