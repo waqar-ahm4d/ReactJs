@@ -10,7 +10,7 @@ function ProductCard({
   return (
     <div>
       <div>
-        <img src={image} alt="" style={{width: 'auto', height: '100px'}} />
+        {image && <img src={image} alt="" style={{width: 'auto', height: '100px'}} />}
         {comparePrice && (
           <span
             className="sale_badge"

@@ -93,12 +93,24 @@ function App() {
   const [apiProducts, setApiProducts] = useState([]);
 
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
+    const controller = new AbortController();
+
+    fetch("https://fakestoreapi.com/products", { signal: controller.signal })
       .then((response) => response.json())
       .then((data) => {
         setApiProducts(data);
         console.log(data);
+      })
+      .catch((error) => {
+        if (error.name === "AbortError") {
+          console.log("Fetch Successfully Aborted");
+        } else {
+          console.log("Fetched Failed", error);
+        }
       });
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   return (
@@ -112,6 +124,7 @@ function App() {
         <button onClick={reset}> Reset </button>
       </div>
       <br />
+      <h3>Static Products</h3>
       <div
         className="products-wrapper"
         style={{
@@ -133,8 +146,12 @@ function App() {
       </div>
       <br />
       {show && <Timer />}
-      <button onClick={() => setShow(!show)}>Toggle Timer</button>
-      <br />
+      <button
+        style={{ width: "max-content", margin: "auto" }}
+        onClick={() => setShow(!show)}
+      >
+        Toggle
+      </button>
       <br />
       {/* render api products */}
       <h3>API Products</h3>
