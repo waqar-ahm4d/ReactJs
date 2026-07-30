@@ -2,7 +2,6 @@ import { useState } from "react";
 import ProductCard from "./ProductCard";
 import { useEffect } from "react";
 
-
 const products = [
   {
     id: 1,
@@ -11,7 +10,6 @@ const products = [
     comparePrice: 1499,
     category: "Mobile",
     stock: 90,
-    
   },
   {
     id: 2,
@@ -20,7 +18,6 @@ const products = [
     comparePrice: 2999,
     category: "Laptop",
     stock: 10,
-    
   },
   {
     id: 3,
@@ -28,7 +25,6 @@ const products = [
     price: 249,
     category: "Accessories",
     stock: 10,
-      
   },
   {
     id: 4,
@@ -37,7 +33,6 @@ const products = [
     comparePrice: 2999,
     category: "Laptop",
     stock: 10,
-    
   },
   {
     id: 5,
@@ -45,22 +40,21 @@ const products = [
     price: 349,
     category: "Accessories",
     stock: 10,
-      
   },
 ];
 
 function Timer() {
-  useEffect(() => {
-    const id = setInterval(() => {
-      console.log('tick 2');
-    }, 100);
-    console.log('Mounted');
-    return () => {
-      console.log('Cleanup - Counter Stopped');
-      clearInterval(id);
-    }
-  }, [])
-  return <h2>Timer Running</h2>
+  // useEffect(() => {
+  //   const id = setInterval(() => {
+  //     console.log('tick 2');
+  //   }, 100);
+  //   console.log('Mounted');
+  //   return () => {
+  //     console.log('Cleanup - Counter Stopped');
+  //     clearInterval(id);
+  //   }
+  // }, [])
+  return <h2>Timer Running</h2>;
 }
 
 function App() {
@@ -68,10 +62,10 @@ function App() {
 
   function increment(value) {
     // setCount(count + value);
-    setCount(prev => prev + value);
+    setCount((prev) => prev + value);
   }
   function decrement() {
-    setCount(prev => prev - 1);
+    setCount((prev) => prev - 1);
   }
   function reset() {
     setCount(0);
@@ -95,6 +89,17 @@ function App() {
   // }, []) //tick keep on running because [] never changes or unmounnted....
 
   const [show, setShow] = useState(true);
+  // fetching api products
+  const [apiProducts, setApiProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products")
+      .then((response) => response.json())
+      .then((data) => {
+        setApiProducts(data);
+        console.log(data);
+      });
+  }, []);
 
   return (
     <>
@@ -107,17 +112,49 @@ function App() {
         <button onClick={reset}> Reset </button>
       </div>
       <br />
-      <div className="products-wrapper" style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', alignItems: 'center'}}>
-        {
-          products.map(product => (
-            <ProductCard key={product.id} title={product.title} price={product.price} comparePrice={product.comparePrice} category={product.category} inStock={product.stock} />
-          ))
-        }
+      <div
+        className="products-wrapper"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          alignItems: "center",
+        }}
+      >
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            title={product.title}
+            price={product.price}
+            comparePrice={product.comparePrice}
+            category={product.category}
+            inStock={product.stock}
+          />
+        ))}
       </div>
       <br />
       {show && <Timer />}
       <button onClick={() => setShow(!show)}>Toggle Timer</button>
-      <br /><br />
+      <br />
+      <br />
+      {/* render api products */}
+      <h3>API Products</h3>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          alignItems: "center",
+        }}
+      >
+        {apiProducts.map((product) => (
+          <ProductCard
+            key={product.id}
+            image={product.image}
+            title={product.title}
+            price={product.price}
+            category={product.category}
+          />
+        ))}
+      </div>
     </>
   );
 }
