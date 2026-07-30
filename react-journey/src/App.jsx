@@ -7,19 +7,44 @@ const products = [
     id: 1,
     title: "iPhone 17",
     price: 999,
+    comparePrice: 1499,
     category: "Mobile",
+    stock: 90,
+    
   },
   {
     id: 2,
     title: "MacBook Pro",
-    price: 1999,
+    price: 1799,
+    comparePrice: 2999,
     category: "Laptop",
+    stock: 10,
+    
   },
   {
     id: 3,
     title: "AirPods Pro",
     price: 249,
     category: "Accessories",
+    stock: 10,
+      
+  },
+  {
+    id: 4,
+    title: "MacBook Pro",
+    price: 1999,
+    comparePrice: 2999,
+    category: "Laptop",
+    stock: 10,
+    
+  },
+  {
+    id: 5,
+    title: "AirPods Pro",
+    price: 349,
+    category: "Accessories",
+    stock: 10,
+      
   },
 ];
 
@@ -53,7 +78,7 @@ function App() {
       <div>
         {
           products.map(product => (
-            <ProductCard key={product.id} title={product.title} price={product.price} category={product.category} />
+            <ProductCard key={product.id} title={product.title} price={product.price} comparePrice={product.comparePrice} category={product.category} inStock={product.stock} />
           ))
         }
       </div>
