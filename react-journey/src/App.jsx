@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ProductCard from "./ProductCard";
+import { useEffect } from "react";
 
 
 const products = [
@@ -48,6 +49,20 @@ const products = [
   },
 ];
 
+function Timer() {
+  useEffect(() => {
+    const id = setInterval(() => {
+      console.log('tick 2');
+    }, 100);
+    console.log('Mounted');
+    return () => {
+      console.log('Cleanup - Counter Stopped');
+      clearInterval(id);
+    }
+  }, [])
+  return <h2>Timer Running</h2>
+}
+
 function App() {
   const [count, setCount] = useState(0);
 
@@ -62,7 +77,24 @@ function App() {
     setCount(0);
   }
 
-  
+  // useEffect(() => {
+  //   console.log("New Count: ", count);
+  //   return () => {
+  //     console.log("Old Count: ", count);
+  //   }
+  // }, [count]);
+
+  // useEffect(() => {
+  //   const id = setInterval(() => {
+  //     console.log('tick')
+  //   }, 100)
+
+  //   return () => {
+  //     clearInterval(id)
+  //   };
+  // }, []) //tick keep on running because [] never changes or unmounnted....
+
+  const [show, setShow] = useState(true);
 
   return (
     <>
@@ -74,15 +106,18 @@ function App() {
         <button onClick={() => increment(10)}> +10</button>
         <button onClick={reset}> Reset </button>
       </div>
-
-      <div>
+      <br />
+      <div className="products-wrapper" style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', alignItems: 'center'}}>
         {
           products.map(product => (
             <ProductCard key={product.id} title={product.title} price={product.price} comparePrice={product.comparePrice} category={product.category} inStock={product.stock} />
           ))
         }
       </div>
-
+      <br />
+      {show && <Timer />}
+      <button onClick={() => setShow(!show)}>Toggle Timer</button>
+      <br /><br />
     </>
   );
 }
