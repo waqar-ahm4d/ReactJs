@@ -116,42 +116,40 @@ function App() {
   // }, []);
 
   const [isLoading, setIsLoading] = useState(true);
-  // async await method
-  useEffect(() => {
-    const controller = new AbortController();
+  const [error, setError] = useState(null);
 
-    async function fetchProducts() {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`${url}/products`, {
-          signal: controller.signal,
-        });
-        const data = await response.json();
-        setApiProducts(data);
-        console.log(data);
-      } catch (error) {
-        if (error.name === "AbortError") {
-          console.log("Fetch Successfully Aborted");
-        } else {
-          console.log("Fetch failed", error);
-        }
-      } finally { //shows loading unntil fully fetched and doesnt show blank screen
-        if(!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
+  // async await method
+  async function fetchProducts() {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await fetch(`${url}/products`);
+      const data = await response.json();
+      setApiProducts(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Fetch failed", error);
+      setError("Failed to load products");
+    } finally {
+      //shows loading unntil fully fetched and doesnt show blank screen
+      setIsLoading(false);
     }
+  }
+  useEffect(() => {
     fetchProducts();
     // setIsLoading(false); instantly goes off even after 1-2 products loaded and sshows a blank screen before rendering UI
-    return () => {
-      controller.abort();
-    };
   }, []);
 
   return (
     <>
       {/* render api products */}
       <h3>API Products</h3>
+      {error && (
+        <div>
+          <h3>{error}</h3>
+          <button onClick={fetchProducts}>Retry</button>
+        </div>
+      )}
       {isLoading ? (
         <div style={{ textAlign: "center", padding: "40px", fontSize: "24px" }}>
           <div className="spinner"></div>
