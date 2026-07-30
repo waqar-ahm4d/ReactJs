@@ -91,26 +91,54 @@ function App() {
   const [show, setShow] = useState(true);
   // fetching api products
   const [apiProducts, setApiProducts] = useState([]);
+  const url = "https://fakestoreapi.com";
+  // .then method
 
+  // useEffect(() => {
+  //   const controller = new AbortController();
+
+  //   fetch(`${url}/products`, { signal: controller.signal })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setApiProducts(data);
+  //       console.log(data);
+  //     })
+  //     .catch((error) => {
+  //       if (error.name === "AbortError") {
+  //         console.log("Fetch Successfully Aborted");
+  //       } else {
+  //         console.log("Fetched Failed", error);
+  //       }
+  //     });
+  //   return () => {
+  //     controller.abort();
+  //   };
+  // }, []);
+
+  // async await method
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch("https://fakestoreapi.com/products", { signal: controller.signal })
-      .then((response) => response.json())
-      .then((data) => {
+    async function fetchProducts() {
+      try {
+        const response = await fetch(`${url}/products`, {
+          signal: controller.signal,
+        });
+        const data = await response.json();
         setApiProducts(data);
         console.log(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         if (error.name === "AbortError") {
           console.log("Fetch Successfully Aborted");
         } else {
-          console.log("Fetched Failed", error);
+          console.log("Fetch failed", error);
         }
-      });
+      }
+    }
+    fetchProducts();
     return () => {
       controller.abort();
-    };
+    }
   }, []);
 
   return (
