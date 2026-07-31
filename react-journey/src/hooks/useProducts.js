@@ -1,20 +1,21 @@
 import { useState, useEffect } from "react";
 import { getProducts } from "../services/productService";
 
-function useProducts() {
+function useProducts(searchQuery = "") {
   const [error, setError] = useState(null);
-  const [apiProducts, setApiProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  async function fetchProducts() {
+  async function fetchProducts(signal) {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await getProducts();
-      setApiProducts(data);
+      const data = await getProducts(signal);
+      setProducts(data);
     } catch (err) {
+      if (err.name === "AbortError") return;
+      
       console.error("Failed to fetch", err);
-      //   setError("Failed to fetch");
       setError(err.message || "Failed to fetch");
     } finally {
       setIsLoading(false);
@@ -22,14 +23,31 @@ function useProducts() {
   }
 
   useEffect(() => {
-    fetchProducts();
+    const controller = new AbortController();
+    fetchProducts(controller.signal);
+    return () => {
+      controller.abort();
+    };
   }, []);
 
+  const query = searchQuery.trim().toLowerCase();
+  if (!query) {
+    return {
+      products: products,
+      isLoading,
+      error,
+      refetch: fetchProducts,
+    };
+  }
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(query),
+  );
+
   return {
-    products: apiProducts,
+    products: filteredProducts,
     isLoading,
     error,
-    retry: fetchProducts,
+    refetch: fetchProducts,
   };
 }
 

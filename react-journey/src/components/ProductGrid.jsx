@@ -5,40 +5,23 @@ import ErrorState from "./ErrorFetching";
 import useProducts from "../hooks/useProducts";
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
+import useDebounce from "../hooks/useDebounce";
 
 function ProductGrid() {
-  const { products, isLoading, error, retry } = useProducts();
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const debouncedQuery = useDebounce(searchQuery, 300);
+  const { products, isLoading, error, refetch } = useProducts(debouncedQuery);
 
   function handleSearchChange(e) {
     setSearchQuery(e.target.value);
     // console.log(e.target.value);
   }
-  useEffect(() => {
-    console.log("searchQuery", searchQuery);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    const id = setTimeout(() => {
-      setDebouncedQuery(searchQuery);
-    }, 300);
-    return () => {
-      clearTimeout(id);
-    };
-  }, [searchQuery]);
-
-  useEffect(() => {
-    console.log("debouncedQuery: ", debouncedQuery);
-  }, [debouncedQuery]);
-
-  const query = debouncedQuery.trim().toLowerCase();
-  const filteredProducts = products.filter((product) =>
-    product.title.toLowerCase().includes(query),
-  );
+  //   useEffect(() => {
+  //     console.log("searchQuery", searchQuery);
+  //   }, [searchQuery]);
 
   if (error) {
-    return <ErrorState message={error} onRetry={retry} />;
+    return <ErrorState message={error} onRetry={refetch} />;
   }
 
   if (isLoading) {
@@ -58,10 +41,10 @@ function ProductGrid() {
       />
 
       <div className="products-grid">
-        {filteredProducts.length === 0 ? (
+        {products.length === 0 ? (
           <EmptyState title="No Products Found" />
         ) : (
-          filteredProducts.map((product) => (
+          products.map((product) => (
             <ProductCard
               key={product.id}
               image={product.image}
