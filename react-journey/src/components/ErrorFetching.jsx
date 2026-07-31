@@ -1,4 +1,4 @@
-function ErrorState(message, onRetry) {
+function ErrorState({message, onRetry}) {
   return (
     <>
       <div className="error-state">

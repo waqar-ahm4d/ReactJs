@@ -12,10 +12,10 @@ function useProducts() {
       setError(null);
       const data = await getProducts();
       setApiProducts(data);
-    } catch (error) {
-      console.error("Failed to fetch", error);
+    } catch (err) {
+      console.error("Failed to fetch", err);
       //   setError("Failed to fetch");
-      setError(error.message || "Failed to fetch");
+      setError(err.message || "Failed to fetch");
     } finally {
       setIsLoading(false);
     }

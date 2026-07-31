@@ -1,4 +1,4 @@
-function EmptyState(title) {
+function EmptyState({title}) {
   return (
     <>
       <div className="empty-state">

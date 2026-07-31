@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ProductCard from "./ProductCard";
-import { useEffect } from "react";
+import ProductGrid from "./components/ProductGrid";
+import ProductCard from "./ProductCard"
 
 const products = [
   {
@@ -89,9 +89,6 @@ function App() {
   // }, []) //tick keep on running because [] never changes or unmounnted....
 
   const [show, setShow] = useState(true);
-  // fetching api products
-  const [apiProducts, setApiProducts] = useState([]);
-  const url = "https://fakestoreapi.com";
   // .then method
 
   // useEffect(() => {
@@ -115,65 +112,13 @@ function App() {
   //   };
   // }, []);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // async await method
-  async function fetchProducts() {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await fetch(`${url}/products`);
-      const data = await response.json();
-      setApiProducts(data);
-      console.log(data);
-    } catch (error) {
-      console.error("Fetch failed", error);
-      setError("Failed to load products");
-    } finally {
-      //shows loading unntil fully fetched and doesnt show blank screen
-      setIsLoading(false);
-    }
-  }
-  useEffect(() => {
-    fetchProducts();
-    // setIsLoading(false); instantly goes off even after 1-2 products loaded and sshows a blank screen before rendering UI
-  }, []);
+  
 
   return (
     <>
       {/* render api products */}
       <h3>API Products</h3>
-      {error && (
-        <div>
-          <h3>{error}</h3>
-          <button onClick={fetchProducts}>Retry</button>
-        </div>
-      )}
-      {isLoading ? (
-        <div style={{ textAlign: "center", padding: "40px", fontSize: "24px" }}>
-          <div className="spinner"></div>
-          <p>Loading products...</p>
-        </div>
-      ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            alignItems: "center",
-          }}
-        >
-          {apiProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              image={product.image}
-              title={product.title}
-              price={product.price}
-              category={product.category}
-            />
-          ))}
-        </div>
-      )}
+      <ProductGrid />
       <br /> <br />
       <h1>{count}</h1>
       <div>

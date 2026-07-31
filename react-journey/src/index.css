@@ -52,6 +52,7 @@
 
 body {
   margin: 0;
+  padding: 1rem;
 }
 
 #root {
@@ -109,7 +110,12 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
-
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 2rem;
+    gap: 1rem;
+}
 /* spinner */
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -124,4 +130,11 @@ code {
   border-radius: 50%;             
   animation: spin 0.8s linear infinite; 
   margin: 20px auto;               
+}
+.search-box {
+  max-width: 300px;
+  width: 100%;
+  margin: 1rem auto;
+  padding: 5px 10px;
+  border-radius: 5px;
 }
