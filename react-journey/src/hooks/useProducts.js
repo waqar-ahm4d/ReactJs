@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getProducts } from "../services/productService";
 
 function useProducts(searchQuery = "") {
@@ -14,7 +14,7 @@ function useProducts(searchQuery = "") {
       setProducts(data);
     } catch (err) {
       if (err.name === "AbortError") return;
-      
+
       console.error("Failed to fetch", err);
       setError(err.message || "Failed to fetch");
     } finally {
@@ -39,9 +39,9 @@ function useProducts(searchQuery = "") {
       refetch: fetchProducts,
     };
   }
-  const filteredProducts = products.filter((product) =>
-    product.title.toLowerCase().includes(query),
-  );
+  const filteredProducts = useMemo(() => {
+    products.filter((product) => product.title.toLowerCase().includes(query));
+  }, [products, query]);
 
   return {
     products: filteredProducts,
