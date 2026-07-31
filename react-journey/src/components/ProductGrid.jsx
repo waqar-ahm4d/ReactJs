@@ -8,6 +8,7 @@ import SearchBar from "./SearchBar";
 import useDebounce from "../hooks/useDebounce";
 import CategoryFilter from "./CategoryFilter";
 import SortFilter from "./SortFilter";
+import PriceFilter from "./PriceFilter";
 
 function ProductGrid() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,7 +18,14 @@ function ProductGrid() {
 
   const [sortBy, setSortBy] = useState("default");
 
-  const { filteredProducts, allProducts, isLoading, error, refetch } = useProducts(debouncedQuery, selectedCategory, sortBy);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+
+  const isPriceRangeValid =
+    minPrice !== "" && maxPrice !== "" && Number(minPrice) > Number(maxPrice);
+
+  const { filteredProducts, allProducts, isLoading, error, refetch } =
+    useProducts(debouncedQuery, selectedCategory, sortBy, minPrice, maxPrice);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -30,17 +38,31 @@ function ProductGrid() {
     setSelectedCategory(e.target.value);
   };
 
-//   const categories = [...new Set(allProducts.map((product) => product.category))];
-//   console.log("Categories calculated");
+  //   const categories = [...new Set(allProducts.map((product) => product.category))];
+  //   console.log("Categories calculated");
 
-const handleSortChange = (e) => {
+  const handleSortChange = (e) => {
     setSortBy(e.target.value);
-}
+  };
 
+  const handleMinPriceChange = (e) => {
+    setMinPrice(e.target.value);
+  };
+  const handleMaxPriceChange = (e) => {
+    setMaxPrice(e.target.value);
+  };
+
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("all");
+    setSortBy("default");
+    setMinPrice("");
+    setMaxPrice("");
+  };
   const categories = useMemo(() => {
-    return [...new Set(allProducts.map(product => product.category))];
-  }, [allProducts])
-  
+    return [...new Set(allProducts.map((product) => product.category))];
+  }, [allProducts]);
+
   if (error) {
     return <ErrorState message={error} onRetry={refetch} />;
   }
@@ -60,16 +82,34 @@ const handleSortChange = (e) => {
         placeholder="Search Products..."
         onChange={handleSearchChange}
       />
-      
-      <CategoryFilter
-        value={selectedCategory}
-        options={categories}
-        onChange={handleCategoryChange}
+      <div className="flex">
+        <CategoryFilter
+          value={selectedCategory}
+          options={categories}
+          onChange={handleCategoryChange}
+        />
+        <SortFilter value={sortBy} onChange={handleSortChange} />
+      </div>
+      <PriceFilter
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        onMinPriceChange={handleMinPriceChange}
+        onMaxPriceChange={handleMaxPriceChange}
       />
-      <SortFilter value={sortBy} onChange={handleSortChange} />
+      <div className="flex">
+        <button onClick={resetFilters}>Reset Filters</button>
+      </div>
+
+      <div className="flex">
+        {isPriceRangeValid && (
+          <p>Minimum price cannot be greater than maximum price.</p>
+        )}
+      </div>
 
       <div className="products-grid">
-        {filteredProducts.length === 0 ? (
+        {isPriceRangeValid ? (
+          <EmptyState title="Invalid Price Range" />
+        ) : filteredProducts.length === 0 ? (
           <EmptyState title="No Products Found" />
         ) : (
           filteredProducts.map((product) => (

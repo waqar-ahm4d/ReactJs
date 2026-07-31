@@ -5,6 +5,8 @@ function useProducts(
   searchQuery = "",
   selectedCategory = "all",
   sortBy = "default",
+  minPrice = "",
+  maxPrice = ""
 ) {
   const [error, setError] = useState(null);
   const [allProducts, setAllProducts] = useState([]);
@@ -52,9 +54,13 @@ function useProducts(
     // products.filter((product) => product.title.toLowerCase().includes(query));
     const result = allProducts.filter((product) => {
       const matchesSearch = product.title.toLowerCase().includes(query);
+
       const matchesCategory =
         selectedCategory === "all" || product.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+
+      const matchesPrice = (minPrice === "" || product.price >= Number(minPrice)) && (maxPrice === "" || product.price <= Number(maxPrice));
+
+      return matchesSearch && matchesCategory && matchesPrice;
     });
 
     switch (sortBy) {
@@ -69,7 +75,7 @@ function useProducts(
       default:
         return result;
     }
-  }, [allProducts, query, selectedCategory, sortBy]);
+  }, [allProducts, query, selectedCategory, sortBy, minPrice, maxPrice]);
 
   return {
     filteredProducts: filteredProducts,
