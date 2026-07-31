@@ -3,10 +3,11 @@ import Loading from "./Loading";
 import EmptyState from "./EmptyState";
 import ErrorState from "./ErrorFetching";
 import useProducts from "../hooks/useProducts";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import SearchBar from "./SearchBar";
 import useDebounce from "../hooks/useDebounce";
 import CategoryFilter from "./CategoryFilter";
+import SortFilter from "./SortFilter";
 
 function ProductGrid() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,7 +15,9 @@ function ProductGrid() {
 
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const { filteredProducts, allProducts, isLoading, error, refetch } = useProducts(debouncedQuery, selectedCategory);
+  const [sortBy, setSortBy] = useState("default");
+
+  const { filteredProducts, allProducts, isLoading, error, refetch } = useProducts(debouncedQuery, selectedCategory, sortBy);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -30,12 +33,14 @@ function ProductGrid() {
 //   const categories = [...new Set(allProducts.map((product) => product.category))];
 //   console.log("Categories calculated");
 
+const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+}
+
   const categories = useMemo(() => {
-    console.log("Categories calculated");
     return [...new Set(allProducts.map(product => product.category))];
   }, [allProducts])
   
-  console.log("Grid rendered");
   if (error) {
     return <ErrorState message={error} onRetry={refetch} />;
   }
@@ -61,6 +66,7 @@ function ProductGrid() {
         options={categories}
         onChange={handleCategoryChange}
       />
+      <SortFilter value={sortBy} onChange={handleSortChange} />
 
       <div className="products-grid">
         {filteredProducts.length === 0 ? (

@@ -1,7 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { getProducts } from "../services/productService";
 
-function useProducts(searchQuery = "", selectedCategory = "all") {
+function useProducts(
+  searchQuery = "",
+  selectedCategory = "all",
+  sortBy = "default",
+) {
   const [error, setError] = useState(null);
   const [allProducts, setAllProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,19 +43,33 @@ function useProducts(searchQuery = "", selectedCategory = "all") {
   //     refetch: fetchProducts,
   //   };
   // }
-//   console.log({
-//   searchQuery,
-//   selectedCategory,
-//   allProducts,
-// });
+  //   console.log({
+  //   searchQuery,
+  //   selectedCategory,
+  //   allProducts,
+  // });
   const filteredProducts = useMemo(() => {
     // products.filter((product) => product.title.toLowerCase().includes(query));
-    return allProducts.filter(product => {
+    const result = allProducts.filter((product) => {
       const matchesSearch = product.title.toLowerCase().includes(query);
-      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      const matchesCategory =
+        selectedCategory === "all" || product.category === selectedCategory;
       return matchesSearch && matchesCategory;
-    })
-  }, [allProducts, query, selectedCategory]);
+    });
+
+    switch (sortBy) {
+      case "price-low":
+        return [...result].sort((a, b) => a.price - b.price);
+      case "price-high":
+        return [...result].sort((a, b) => b.price - a.price);
+      case "name-a-z":
+        return [...result].sort((a, b) => a.title.localeCompare(b.title));
+      case "name-z-a":
+        return [...result].sort((a, b) => b.title.localeCompare(a.title));
+      default:
+        return result;
+    }
+  }, [allProducts, query, selectedCategory, sortBy]);
 
   return {
     filteredProducts: filteredProducts,
