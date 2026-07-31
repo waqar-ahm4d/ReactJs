@@ -3,23 +3,39 @@ import Loading from "./Loading";
 import EmptyState from "./EmptyState";
 import ErrorState from "./ErrorFetching";
 import useProducts from "../hooks/useProducts";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SearchBar from "./SearchBar";
 import useDebounce from "../hooks/useDebounce";
+import CategoryFilter from "./CategoryFilter";
 
 function ProductGrid() {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedQuery = useDebounce(searchQuery, 300);
-  const { products, isLoading, error, refetch } = useProducts(debouncedQuery);
 
-  function handleSearchChange(e) {
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const { filteredProducts, allProducts, isLoading, error, refetch } = useProducts(debouncedQuery, selectedCategory);
+
+  const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    // console.log(e.target.value);
-  }
+  };
   //   useEffect(() => {
   //     console.log("searchQuery", searchQuery);
   //   }, [searchQuery]);
 
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
+//   const categories = [...new Set(allProducts.map((product) => product.category))];
+//   console.log("Categories calculated");
+
+  const categories = useMemo(() => {
+    console.log("Categories calculated");
+    return [...new Set(allProducts.map(product => product.category))];
+  }, [allProducts])
+  
+  console.log("Grid rendered");
   if (error) {
     return <ErrorState message={error} onRetry={refetch} />;
   }
@@ -39,12 +55,18 @@ function ProductGrid() {
         placeholder="Search Products..."
         onChange={handleSearchChange}
       />
+      
+      <CategoryFilter
+        value={selectedCategory}
+        options={categories}
+        onChange={handleCategoryChange}
+      />
 
       <div className="products-grid">
-        {products.length === 0 ? (
+        {filteredProducts.length === 0 ? (
           <EmptyState title="No Products Found" />
         ) : (
-          products.map((product) => (
+          filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
               image={product.image}
