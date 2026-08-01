@@ -13,79 +13,77 @@ import { useSearchParams } from "react-router-dom";
 
 function ProductGrid() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || "",
-  );
+  //   const [searchQuery, setSearchQuery] = useState(
+  //     searchParams.get("search") || "",
+  //   );
+  const searchQuery = searchParams.get("search") || "";
   const debouncedQuery = useDebounce(searchQuery, 300);
 
-  const [selectedCategory, setSelectedCategory] = useState(
-    searchParams.get("category") || "all",
-  );
-
-  const [sortBy, setSortBy] = useState(searchParams.get('sort') || "default");
-
-  const [minPrice, setMinPrice] = useState(searchParams.get('min') || "");
-  const [maxPrice, setMaxPrice] = useState(searchParams.get('max') || "");
+  //   const [selectedCategory, setSelectedCategory] = useState(
+  //     searchParams.get("category") || "all",
+  //   );
+  //   const [sortBy, setSortBy] = useState(searchParams.get("sort") || "default");
+  //   const [minPrice, setMinPrice] = useState(searchParams.get("min") || "");
+  //   const [maxPrice, setMaxPrice] = useState(searchParams.get("max") || "");
+  const selectedCategory = searchParams.get("category") || "all";
+  const sortBy = searchParams.get("sort") || "default";
+  const minPrice = searchParams.get("min") || "";
+  const maxPrice = searchParams.get("max") || "";
 
   const isPriceRangeValid =
     minPrice !== "" && maxPrice !== "" && Number(minPrice) > Number(maxPrice);
 
-  useEffect(() => {
-    setSearchQuery(searchParams.get("search") || "");
-    setSelectedCategory(searchParams.get("category") || "all");
-    setSortBy(searchParams.get('sort') || 'default');
-    setMinPrice(searchParams.get('min') || '');
-    setMaxPrice(searchParams.get('max') || '');
-  }, [searchParams]);
+  //   useEffect(() => {
+  //     setSearchQuery(searchParams.get("search") || "");
+  //     setSelectedCategory(searchParams.get("category") || "all");
+  //     setSortBy(searchParams.get("sort") || "default");
+  //     setMinPrice(searchParams.get("min") || "");
+  //     setMaxPrice(searchParams.get("max") || "");
+  //   }, [searchParams]);
 
   const { filteredProducts, allProducts, isLoading, error, refetch } =
     useProducts(debouncedQuery, selectedCategory, sortBy, minPrice, maxPrice);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    setSearchQuery(value);
-    updateParams('search', value, "")
+    updateParams("search", value, "");
   };
 
   const handleCategoryChange = (e) => {
     const value = e.target.value;
-    setSelectedCategory(value);
-    updateParams('category', value, 'all')
+    updateParams("category", value, "all");
   };
 
   const handleSortChange = (e) => {
     const value = e.target.value;
-    setSortBy(value);
-    updateParams('sort', value, 'default')
+    updateParams("sort", value, "default");
   };
 
   const handleMinPriceChange = (e) => {
     const value = e.target.value;
-    setMinPrice(value);
-    updateParams('min', value, '')
+    updateParams("min", value, "");
   };
   const handleMaxPriceChange = (e) => {
     const value = e.target.value;
-    setMaxPrice(value);
-    updateParams('max', value, '')
+    updateParams("max", value, "");
   };
 
   function updateParams(key, value, defaultValue = "") {
     const params = new URLSearchParams(searchParams);
-    if(!value || value === defaultValue) {
-        params.delete(key)
+    if (!value || value === defaultValue) {
+      params.delete(key);
     } else {
-        params.set(key, value);
+      params.set(key, value);
     }
     setSearchParams(params);
   }
 
   const resetFilters = () => {
-    setSearchQuery("");
-    setSelectedCategory("all");
-    setSortBy("default");
-    setMinPrice("");
-    setMaxPrice("");
+    // setSearchQuery("");
+    // setSelectedCategory("all");
+    // setSortBy("default");
+    // setMinPrice("");
+    // setMaxPrice("");
     setSearchParams({});
   };
   const categories = useMemo(() => {
