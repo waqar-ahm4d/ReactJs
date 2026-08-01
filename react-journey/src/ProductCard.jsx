@@ -1,4 +1,7 @@
+import { Link } from "react-router-dom";
+
 function ProductCard({
+  id,
   image,
   title,
   price,
@@ -9,7 +12,7 @@ function ProductCard({
 }) {
   return (
     <div>
-      <div>
+      <Link to={`/products/${id}`}>
         {image && <img src={image} alt="" style={{width: 'auto', height: '100px'}} />}
         {comparePrice && (
           <span
@@ -27,8 +30,7 @@ function ProductCard({
         {inStock && (
           <div>{inStock > 0 ? <p>In Stock ✅</p> : <p>Out of Stock ❌</p>}</div>
         )}
-      </div>
-      <br />
+      </Link>
     </div>
   );
 }

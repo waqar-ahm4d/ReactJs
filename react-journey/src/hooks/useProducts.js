@@ -1,13 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { getProducts } from "../services/productService";
 
-function useProducts(
+function useProducts({
   searchQuery = "",
   selectedCategory = "all",
   sortBy = "default",
   minPrice = "",
-  maxPrice = ""
-) {
+  maxPrice = "",
+}) {
   const [error, setError] = useState(null);
   const [allProducts, setAllProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +24,7 @@ function useProducts(
       console.error("Failed to fetch", err);
       setError(err.message || "Failed to fetch");
     } finally {
-      if(!signal.aborted) {
+      if (!signal.aborted) {
         setIsLoading(false);
       }
     }
@@ -53,14 +53,18 @@ function useProducts(
   //   allProducts,
   // });
   const filteredProducts = useMemo(() => {
-    // products.filter((product) => product.title.toLowerCase().includes(query));
+
     const result = allProducts.filter((product) => {
-      const matchesSearch = product.title.toLowerCase().includes(query);
+      const matchesSearch =
+        product.title.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query);
 
       const matchesCategory =
         selectedCategory === "all" || product.category === selectedCategory;
 
-      const matchesPrice = (minPrice === "" || product.price >= Number(minPrice)) && (maxPrice === "" || product.price <= Number(maxPrice));
+      const matchesPrice =
+        (minPrice === "" || product.price >= Number(minPrice)) &&
+        (maxPrice === "" || product.price <= Number(maxPrice));
 
       return matchesSearch && matchesCategory && matchesPrice;
     });

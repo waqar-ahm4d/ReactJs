@@ -42,7 +42,13 @@ function ProductGrid() {
   //   }, [searchParams]);
 
   const { filteredProducts, allProducts, isLoading, error, refetch } =
-    useProducts(debouncedQuery, selectedCategory, sortBy, minPrice, maxPrice);
+    useProducts({
+      debouncedQuery,
+      selectedCategory,
+      sortBy,
+      minPrice,
+      maxPrice,
+    });
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -146,6 +152,7 @@ function ProductGrid() {
           filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
+              id={product.id}
               image={product.image}
               title={product.title}
               price={product.price}
