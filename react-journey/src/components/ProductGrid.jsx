@@ -3,54 +3,82 @@ import Loading from "./Loading";
 import EmptyState from "./EmptyState";
 import ErrorState from "./ErrorFetching";
 import useProducts from "../hooks/useProducts";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SearchBar from "./SearchBar";
 import useDebounce from "../hooks/useDebounce";
 import CategoryFilter from "./CategoryFilter";
 import SortFilter from "./SortFilter";
 import PriceFilter from "./PriceFilter";
+import { useSearchParams } from "react-router-dom";
 
 function ProductGrid() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || "",
+  );
   const debouncedQuery = useDebounce(searchQuery, 300);
 
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState(
+    searchParams.get("category") || "all",
+  );
 
-  const [sortBy, setSortBy] = useState("default");
+  const [sortBy, setSortBy] = useState(searchParams.get('sort') || "default");
 
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [minPrice, setMinPrice] = useState(searchParams.get('min') || "");
+  const [maxPrice, setMaxPrice] = useState(searchParams.get('max') || "");
 
   const isPriceRangeValid =
     minPrice !== "" && maxPrice !== "" && Number(minPrice) > Number(maxPrice);
+
+  useEffect(() => {
+    setSearchQuery(searchParams.get("search") || "");
+    setSelectedCategory(searchParams.get("category") || "all");
+    setSortBy(searchParams.get('sort') || 'default');
+    setMinPrice(searchParams.get('min') || '');
+    setMaxPrice(searchParams.get('max') || '');
+  }, [searchParams]);
 
   const { filteredProducts, allProducts, isLoading, error, refetch } =
     useProducts(debouncedQuery, selectedCategory, sortBy, minPrice, maxPrice);
 
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+    const value = e.target.value;
+    setSearchQuery(value);
+    updateParams('search', value, "")
   };
-  //   useEffect(() => {
-  //     console.log("searchQuery", searchQuery);
-  //   }, [searchQuery]);
 
   const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
+    const value = e.target.value;
+    setSelectedCategory(value);
+    updateParams('category', value, 'all')
   };
 
-  //   const categories = [...new Set(allProducts.map((product) => product.category))];
-  //   console.log("Categories calculated");
-
   const handleSortChange = (e) => {
-    setSortBy(e.target.value);
+    const value = e.target.value;
+    setSortBy(value);
+    updateParams('sort', value, 'default')
   };
 
   const handleMinPriceChange = (e) => {
-    setMinPrice(e.target.value);
+    const value = e.target.value;
+    setMinPrice(value);
+    updateParams('min', value, '')
   };
   const handleMaxPriceChange = (e) => {
-    setMaxPrice(e.target.value);
+    const value = e.target.value;
+    setMaxPrice(value);
+    updateParams('max', value, '')
   };
+
+  function updateParams(key, value, defaultValue = "") {
+    const params = new URLSearchParams(searchParams);
+    if(!value || value === defaultValue) {
+        params.delete(key)
+    } else {
+        params.set(key, value);
+    }
+    setSearchParams(params);
+  }
 
   const resetFilters = () => {
     setSearchQuery("");
@@ -58,18 +86,19 @@ function ProductGrid() {
     setSortBy("default");
     setMinPrice("");
     setMaxPrice("");
+    setSearchParams({});
   };
   const categories = useMemo(() => {
     return [...new Set(allProducts.map((product) => product.category))];
   }, [allProducts]);
 
-  if (error) {
-    return <ErrorState message={error} onRetry={refetch} />;
-  }
+  //   if (error) {
+  //     return <ErrorState message={error} onRetry={refetch} />;
+  //   }
 
-  if (isLoading) {
-    return <Loading title="Loading products..." />;
-  }
+  //   if (isLoading) {
+  //     return <Loading title="Loading products..." />;
+  //   }
 
   //   if (filteredProducts.length === 0) {
   //     return <EmptyState title="No Products Found" />;
@@ -107,7 +136,11 @@ function ProductGrid() {
       </div>
 
       <div className="products-grid">
-        {isPriceRangeValid ? (
+        {isLoading ? (
+          <Loading title="Loading products..." />
+        ) : error ? (
+          <ErrorState message={error} onRetry={refetch} />
+        ) : isPriceRangeValid ? (
           <EmptyState title="Invalid Price Range" />
         ) : filteredProducts.length === 0 ? (
           <EmptyState title="No Products Found" />

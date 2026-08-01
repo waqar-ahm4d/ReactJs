@@ -24,7 +24,9 @@ function useProducts(
       console.error("Failed to fetch", err);
       setError(err.message || "Failed to fetch");
     } finally {
-      setIsLoading(false);
+      if(!signal.aborted) {
+        setIsLoading(false);
+      }
     }
   }
 
