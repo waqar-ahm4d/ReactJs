@@ -1,4 +1,4 @@
-import ProductCard from "../ProductCard";
+import ProductCard from "./ProductCard";
 import Loading from "./Loading";
 import EmptyState from "./EmptyState";
 import ErrorState from "./ErrorFetching";
