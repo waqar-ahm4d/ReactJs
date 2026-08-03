@@ -38,7 +38,6 @@ function ProductActions({ product, quantity, cartItems, setCartItems }) {
     });
   }
 
-  console.log(cartItems);
 
   return (
     <>

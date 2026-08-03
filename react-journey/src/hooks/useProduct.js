@@ -12,7 +12,8 @@ function useProduct(id) {
             setError(null);
             const data = await getProduct(id, signal);
             setProduct(data);
-            console.log(product)
+            console.log(data);
+            
         } catch(err) {
             if(err.name === "AbortError") return;
             console.log('Failed to fetch product', err);

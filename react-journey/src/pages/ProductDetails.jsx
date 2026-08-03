@@ -6,11 +6,9 @@ import ProductImage from "../components/ProductDetails/ProductImage";
 import ProductInfo from "../components/ProductDetails/ProductInfo";
 import { useState } from "react";
 
-function ProductDetails() {
+function ProductDetails({ cartItems, setCartItems }) {
   const { id } = useParams();
   const { product, isLoading, error, refetch } = useProduct(id);
-
-  const [cartItems, setCartItems] = useState([]);
 
   if (isLoading) return <Loading title="Product Loading... " />;
 
@@ -20,7 +18,7 @@ function ProductDetails() {
     <>
       <div className="product-details">
         <div className="product-gallery">
-          <ProductImage image={product.image} title={product.title} />
+          <ProductImage image={product.images[0]} title={product.title} />
         </div>
         <ProductInfo
           product={product}

@@ -17,7 +17,8 @@ function useProducts({
       setIsLoading(true);
       setError(null);
       const data = await getProducts(signal);
-      setAllProducts(data);
+      setAllProducts(data.products);
+      // console.log(data.products);
     } catch (err) {
       if (err.name === "AbortError") return;
 
