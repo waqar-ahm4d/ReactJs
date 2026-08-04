@@ -21,6 +21,7 @@ function App() {
   return (
     <>
       <Header />
+      <h1 className="text-5xl font-bold text-blue-600">Tailwind Working</h1>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/all-products" element={<AllProducts />} />
