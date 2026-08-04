@@ -6,7 +6,7 @@ import ProductImage from "../components/ProductDetails/ProductImage";
 import ProductInfo from "../components/ProductDetails/ProductInfo";
 import { useState } from "react";
 
-function ProductDetails({ cartItems, setCartItems }) {
+function ProductDetails() {
   const { id } = useParams();
   const { product, isLoading, error, refetch } = useProduct(id);
 
@@ -20,11 +20,7 @@ function ProductDetails({ cartItems, setCartItems }) {
         <div className="product-gallery">
           <ProductImage image={product.images[0]} title={product.title} />
         </div>
-        <ProductInfo
-          product={product}
-          cartItems={cartItems}
-          setCartItems={setCartItems}
-        />
+        <ProductInfo product={product} />
       </div>
     </>
   );

@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
+import useCartContext from "../hooks/useCartContext";
 
-function Header({ cartItems }) {
+function Header() {
+  const {cartItems} = useCartContext();
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   return (
     <>

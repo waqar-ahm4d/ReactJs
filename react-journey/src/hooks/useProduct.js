@@ -12,7 +12,7 @@ function useProduct(id) {
             setError(null);
             const data = await getProduct(id, signal);
             setProduct(data);
-            console.log(data);
+            // console.log(data);
             
         } catch(err) {
             if(err.name === "AbortError") return;

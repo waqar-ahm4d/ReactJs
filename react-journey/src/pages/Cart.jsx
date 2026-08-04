@@ -1,8 +1,9 @@
 import { NavLink } from "react-router-dom";
+import useCartContext from "../hooks/useCartContext";
 
-function Cart({ cartItems, increaseQty, decreaseQty, removeFromCart }) {
-  console.log(cartItems);
-  
+function Cart() {
+  const {cartItems, increaseCartQty, decreaseCartQty, removeFromCart} = useCartContext();
+
   const total = cartItems.reduce((sum, item) => {
     return sum + item.price * item.quantity;
   }, 0);
@@ -23,9 +24,9 @@ function Cart({ cartItems, increaseQty, decreaseQty, removeFromCart }) {
               <div className="item-qty">
                 <span>Quantity:</span>
                 <div className="qty-btn">
-                  <button onClick={() => decreaseQty(item.id)}>-</button>
+                  <button onClick={() => decreaseCartQty(item.id)}>-</button>
                   <span>{item.quantity}</span>
-                  <button onClick={() => increaseQty(item.id)}>+</button>
+                  <button onClick={() => increaseCartQty(item.id)}>+</button>
                 </div>
                 <button onClick={() => removeFromCart(item.id)}>Remove</button>
               </div>

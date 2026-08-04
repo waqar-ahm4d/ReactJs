@@ -2,7 +2,7 @@ import ProductActions from "./ProductActions";
 import QuantitySelector from "./QuantitySelector";
 import { useState } from "react";
 
-function ProductInfo({ product, cartItems, setCartItems }) {
+function ProductInfo({ product }) {
   const [quantity, setQuantity] = useState(1);
   return (
     <>
@@ -16,12 +16,7 @@ function ProductInfo({ product, cartItems, setCartItems }) {
         </div>
         <h3 className="product-price">${product.price}</h3>
         <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
-        <ProductActions
-          product={product}
-          quantity={quantity}
-          cartItems={cartItems}
-          setCartItems={setCartItems}
-        />
+        <ProductActions product={product} quantity={quantity} />
         <div className="product-description">{product.description}</div>
       </div>
     </>
