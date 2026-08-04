@@ -10,6 +10,7 @@ function Header() {
         <NavLink to="/">Home</NavLink>
         <NavLink to="/all-products">Products</NavLink>
         <NavLink to="/practice">Practice</NavLink>
+        <NavLink to="/reducer-demo">Reducer Demo</NavLink>
         <NavLink to="/cart">
           Cart <span className="cart-count">({cartCount})</span>
         </NavLink>

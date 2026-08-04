@@ -7,6 +7,7 @@ import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import { useEffect, useState } from "react";
 import useCart from "./hooks/useCart";
+import ReducerDemo from "./pages/ReducerDemo";
 
 function App() {
   const {
@@ -23,12 +24,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/all-products" element={<AllProducts />} />
-        <Route
-          path="products/:id"
-          element={<ProductDetails />}
-        />
+        <Route path="products/:id" element={<ProductDetails />} />
         <Route path="/practice" element={<PracticePage />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/reducer-demo" element={<ReducerDemo />} />
       </Routes>
     </>
   );
