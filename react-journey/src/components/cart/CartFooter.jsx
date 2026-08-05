@@ -17,7 +17,7 @@ function CartFooter() {
           <span>${total.toFixed(2)} USD</span>
         </div>
         <div className="flex flex-col gap-3">
-          <button className="rounded-lg bg-black py-3 text-white transition hover:bg-gray-800">
+          <button className="rounded-lg bg-black py-3 text-white transition hover:bg-gray-800 ">
             Checkout
           </button>
         </div>

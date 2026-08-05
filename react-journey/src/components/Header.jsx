@@ -10,17 +10,33 @@ import {
   ShoppingCartIcon,
 } from "lucide-react";
 import { FaShoppingBag } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 function Header() {
   const { openCart, cartItems } = useCartContext();
 
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    if (cartItems.length === 0) return;
+    setAnimate(true);
+
+    const timer = setTimeout(() => {
+      setAnimate(false);
+    }, 250);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [cartItems]);
+
   return (
     <>
       <header className="flex justify-between w-full p-2 px-3 bg-gray-100">
-        <NavLink to='/'>
-        <img src={logo} alt="" className="w-10 rounded-full"/>
+        <NavLink to="/">
+          <img src={logo} alt="" className="w-10 rounded-full" />
         </NavLink>
         <div className="flex gap-3 items-center justify-between">
           <NavLink to="/">Home</NavLink>

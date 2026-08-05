@@ -88,12 +88,13 @@ function useCart() {
     const existingItem = findCartItem(product.id);
 
     dispatch({ type: "ADD_TO_CART", payload: { product, quantity } });
-
     if (existingItem) {
       toast.info(`Quantity Updated`);
     } else {
-      toast.success(`${product.title} added to cart`);
+      toast.success(`${product.title} added to your cart`);
     }
+    openCart();
+
   }
 
   function increaseCartQty(productId) {
@@ -113,7 +114,7 @@ function useCart() {
   }
   function removeFromCart(productId) {
     dispatch({ type: "REMOVE_FROM_CART", payload: productId });
-    toast.error("Item removed");
+    toast.error("Item removed from cart");
   }
 
   function openCart() {
