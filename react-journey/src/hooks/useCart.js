@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+import { toast } from "react-toastify";
 
 const initialState = {
   cartItems: [],
@@ -79,19 +80,40 @@ function useCart() {
     localStorage.setItem("cart", JSON.stringify(state.cartItems));
   }, [state.cartItems]);
 
+  function findCartItem(productId) {
+    return state.cartItems.find((item) => item.id === productId);
+  }
+
   function addToCart(product, quantity) {
+    const existingItem = findCartItem(product.id);
+
     dispatch({ type: "ADD_TO_CART", payload: { product, quantity } });
+
+    if (existingItem) {
+      toast.info(`Quantity Updated`);
+    } else {
+      toast.success(`${product.title} added to cart`);
+    }
   }
 
   function increaseCartQty(productId) {
     dispatch({ type: "INCREASE_QTY", payload: productId });
+    toast.info(`Quantity Updated`);
   }
 
   function decreaseCartQty(productId) {
+    const item = findCartItem(productId);
+
     dispatch({ type: "DECREASE_QTY", payload: productId });
+    if (item.quantity === 1) {
+      toast.error("Item removed");
+    } else {
+      toast.info(`Quantity Updated`);
+    }
   }
   function removeFromCart(productId) {
     dispatch({ type: "REMOVE_FROM_CART", payload: productId });
+    toast.error("Item removed");
   }
 
   function openCart() {
@@ -109,7 +131,7 @@ function useCart() {
     decreaseCartQty,
     removeFromCart,
     openCart,
-    closeCart
+    closeCart,
   };
 }
 export default useCart;
