@@ -2,8 +2,10 @@ import { NavLink } from "react-router-dom";
 import useCartContext from "../hooks/useCartContext";
 
 function Header() {
-  const {cartItems} = useCartContext();
+  const {openCart, cartItems} = useCartContext();
+
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
   return (
     <>
       <header className="flex">
@@ -14,6 +16,7 @@ function Header() {
         <NavLink to="/cart">
           Cart <span className="cart-count">({cartCount})</span>
         </NavLink>
+        <button onClick={openCart}>🛒</button>
       </header>
     </>
   );

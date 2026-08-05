@@ -1,80 +1,115 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 
-function useCart() {
-  const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem("cart");
+const initialState = {
+  cartItems: [],
+  isOpen: false,
+};
 
-    if (savedCart) return JSON.parse(savedCart);
-
-    return [];
-  });
-
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  function addToCart(product, quantity) {
-    console.log('atc ');
-    
-    setCartItems((prevCart) => {
+function cartReducer(state, action) {
+  switch (action.type) {
+    case "ADD_TO_CART": {
+      const { product, quantity } = action.payload;
       let found = false;
-      const updatedCart = prevCart.map((item) => {
+      const updatedCart = state.cartItems.map((item) => {
         if (item.id !== product.id) return item;
         found = true;
         return { ...item, quantity: item.quantity + quantity };
       });
       if (!found) {
-        return [...updatedCart, { ...product, quantity }];
+        return {
+          ...state,
+          cartItems: [...updatedCart, { ...product, quantity }],
+        };
       }
-      return updatedCart;
-    });
-    // setCartItems((prevCart) => {
-    //   const existingItem = prevCart.find((item) => item.id === product.id);
-    //   if (!existingItem) {
-    //     return [...prevCart, { ...product, quantity }];
-    //   }
-    //   return prevCart.map((item) => {
-    //     if (item.id === product.id) {
-    //       return { ...item, quantity: item.quantity + quantity };
-    //     }
-    //     return item;
-    //   });
-    // });
+      return { ...state, cartItems: updatedCart };
+    }
+    case "DECREASE_QTY": {
+      const item = state.cartItems.find((item) => item.id === action.payload);
+      if (!item) return state;
+      if (item.quantity === 1) {
+        return {
+          ...state,
+          cartItems: state.cartItems.filter(
+            (item) => item.id !== action.payload,
+          ),
+        };
+      }
+      return {
+        ...state,
+        cartItems: state.cartItems.map((item) => {
+          if (item.id !== action.payload) return item;
+          return { ...item, quantity: item.quantity - 1 };
+        }),
+      };
+    }
+    case "INCREASE_QTY": {
+      return {
+        ...state,
+        cartItems: state.cartItems.map((item) => {
+          if (item.id !== action.payload) return item;
+          return { ...item, quantity: item.quantity + 1 };
+        }),
+      };
+    }
+    case "REMOVE_FROM_CART": {
+      return {
+        ...state,
+        cartItems: state.cartItems.filter((item) => item.id !== action.payload),
+      };
+    }
+    case "OPEN_CART": {
+      return { ...state, isOpen: true };
+    }
+    case "CLOSE_CART": {
+      return { ...state, isOpen: false };
+    }
+    default:
+      return state;
+  }
+}
+
+function useCart() {
+  const [state, dispatch] = useReducer(cartReducer, initialState, (initial) => {
+    const savedCart = localStorage.getItem("cart");
+    if (!savedCart) return initial;
+    return { ...initial, cartItems: JSON.parse(savedCart) };
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(state.cartItems));
+  }, [state.cartItems]);
+
+  function addToCart(product, quantity) {
+    dispatch({ type: "ADD_TO_CART", payload: { product, quantity } });
   }
 
   function increaseCartQty(productId) {
-    setCartItems((prevCart) => {
-      return prevCart.map((item) => {
-        if (item.id !== productId) return item;
-        return { ...item, quantity: item.quantity + 1 };
-      });
-    });
+    dispatch({ type: "INCREASE_QTY", payload: productId });
   }
 
   function decreaseCartQty(productId) {
-    setCartItems((prevCart) => {
-      const item = prevCart.find((item) => item.id === productId);
-      if (item.quantity === 1) {
-        return prevCart.filter((item) => item.id !== productId);
-      }
-      return prevCart.map((item) => {
-        if (item.id !== productId) return item;
-        return { ...item, quantity: item.quantity - 1 };
-      });
-    });
+    dispatch({ type: "DECREASE_QTY", payload: productId });
   }
   function removeFromCart(productId) {
-    setCartItems((prevCart) =>
-      prevCart.filter((item) => item.id !== productId),
-    );
+    dispatch({ type: "REMOVE_FROM_CART", payload: productId });
+  }
+
+  function openCart() {
+    dispatch({ type: "OPEN_CART" });
+  }
+  function closeCart() {
+    dispatch({ type: "CLOSE_CART" });
   }
 
   return {
-    cartItems,
+    cartItems: state.cartItems,
+    isOpen: state.isOpen,
     addToCart,
     increaseCartQty,
     decreaseCartQty,
     removeFromCart,
+    openCart,
+    closeCart
   };
 }
 export default useCart;

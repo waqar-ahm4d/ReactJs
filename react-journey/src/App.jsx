@@ -8,8 +8,11 @@ import Cart from "./pages/Cart";
 import { useEffect, useState } from "react";
 import useCart from "./hooks/useCart";
 import ReducerDemo from "./pages/ReducerDemo";
+import Drawer from "./components/ui/Drawer";
+import CartDrawer from "./components/cart/CartDrawer";
 
 function App() {
+
   const {
     cartItems,
     addToCart,
@@ -21,7 +24,7 @@ function App() {
   return (
     <>
       <Header />
-      <h1 className="text-5xl font-bold text-blue-600">Tailwind Working</h1>
+      <CartDrawer />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/all-products" element={<AllProducts />} />

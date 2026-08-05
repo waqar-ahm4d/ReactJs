@@ -1,23 +1,50 @@
+import QuantitySelector from "../QuantitySelector";
+import RatingStars from "../ui/RatingStars";
 import ProductActions from "./ProductActions";
-import QuantitySelector from "./QuantitySelector";
 import { useState } from "react";
 
 function ProductInfo({ product }) {
   const [quantity, setQuantity] = useState(1);
+  console.log(product);
   return (
     <>
-      <div className="product-info">
-        <p className="product-category">{product.category}</p>
-        <h1 className="product-title">{product.title}</h1>
-        <div className="rating-wrappper">
-          <span className="stars">⭐⭐⭐⭐⭐</span>
-          <span className="rating">{product.rating.rate}</span>
-          <div className="rating-count">({product.rating.count} reviews)</div>
+      <div className="flex flex-col gap-4">
+        <p className="text-sm font-medium uppercase tracking-wide text-gray-500">
+          {product.category}
+        </p>
+
+        <h1 className="text-3xl font-bold leading-tight text-gray-900">
+          {product.title}
+        </h1>
+
+        <div className="flex items-center gap-2">
+          {/* <span className="text-yellow-500">⭐⭐⭐⭐⭐</span> */}
+          <RatingStars rating={product.rating}/>
+          <span className="font-medium">{product.rating}</span>
+
+          <span className="text-sm text-gray-500">
+            ({product.reviews.length} reviews)
+          </span>
         </div>
-        <h3 className="product-price">${product.price}</h3>
-        <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
+
+        <h3 className="text-3xl font-bold text-green-600">
+          ${(product.price * quantity).toFixed(2)}
+        </h3>
+        <div className="my-2 flex items-center justify-between">
+          <QuantitySelector
+            quantity={quantity}
+            onIncrease={() => setQuantity((q) => q + 1)}
+            onDecrease={() => setQuantity((q) => Math.max(1, q - 1))}
+          />
+        </div>
+
         <ProductActions product={product} quantity={quantity} />
-        <div className="product-description">{product.description}</div>
+
+        <div>
+          <h3 className="mb-2 text-lg font-semibold">Description</h3>
+
+          <p className="leading-7 text-gray-600">{product.description}</p>
+        </div>
       </div>
     </>
   );
