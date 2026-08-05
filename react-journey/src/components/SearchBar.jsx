@@ -6,7 +6,7 @@ function SearchBar({value, onChange, placeholder}) {
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="search-box"
+        className="w-full border p-2 rounded"
       />
     </>
   );

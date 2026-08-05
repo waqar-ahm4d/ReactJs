@@ -1,7 +1,9 @@
 function Home() {
   return (
     <>
-      <h3>HomePage</h3>
+      <div className="flex flex-col items-center p-4">
+        <h3>Home Page</h3>
+      </div>
     </>
   );
 }

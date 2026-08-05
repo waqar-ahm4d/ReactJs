@@ -109,60 +109,104 @@ function ProductGrid() {
   //   }
 
   return (
-    <>
+  <div className="mx-auto max-w-7xl px-4 py-8">
+    {/* Page Heading */}
+    <div className="mb-8">
+      <h1 className="text-4xl font-bold text-gray-900">
+        Explore Products
+      </h1>
+
+      <p className="mt-2 text-gray-500">
+        Discover our latest collection.
+      </p>
+    </div>
+
+    {/* Search */}
+    <div className="mb-6">
       <SearchBar
         value={searchQuery}
-        placeholder="Search Products..."
+        placeholder="Search products..."
         onChange={handleSearchChange}
       />
-      <div className="flex">
+    </div>
+
+    {/* Filters */}
+    <div className="mb-6 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="grid gap-4 lg:grid-cols-2">
         <CategoryFilter
           value={selectedCategory}
           options={categories}
           onChange={handleCategoryChange}
         />
-        <SortFilter value={sortBy} onChange={handleSortChange} />
+
+        <SortFilter
+          value={sortBy}
+          onChange={handleSortChange}
+        />
+
+        <PriceFilter
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          onMinPriceChange={handleMinPriceChange}
+          onMaxPriceChange={handleMaxPriceChange}
+        />
+
+        <button
+          onClick={resetFilters}
+          className="rounded-lg border border-gray-300 px-4 py-2 font-medium transition hover:bg-gray-100"
+        >
+          Reset Filters
+        </button>
       </div>
-      <PriceFilter
-        minPrice={minPrice}
-        maxPrice={maxPrice}
-        onMinPriceChange={handleMinPriceChange}
-        onMaxPriceChange={handleMaxPriceChange}
+
+      {isPriceRangeValid && (
+        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+          Minimum price cannot be greater than maximum price.
+        </div>
+      )}
+    </div>
+
+    {/* Products Count */}
+    {!isLoading && !error && !isPriceRangeValid && (
+      <div className="mb-6 flex items-center justify-between">
+        <p className="text-gray-600">
+          Showing{" "}
+          <span className="font-semibold">
+            {filteredProducts.length}
+          </span>{" "}
+          products
+        </p>
+      </div>
+    )}
+
+    {/* Products */}
+    {isLoading ? (
+      <Loading title="Loading products..." />
+    ) : error ? (
+      <ErrorState
+        message={error}
+        onRetry={refetch}
       />
-      <div className="flex">
-        <button onClick={resetFilters}>Reset Filters</button>
+    ) : isPriceRangeValid ? (
+      <EmptyState title="Invalid Price Range" />
+    ) : filteredProducts.length === 0 ? (
+      <EmptyState title="No Products Found" />
+    ) : (
+      <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {filteredProducts.map((product) => (
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            image={product.images[0]}
+            title={product.title}
+            price={product.price}
+            category={product.category}
+          />
+        ))}
       </div>
-
-      <div className="flex">
-        {isPriceRangeValid && (
-          <p>Minimum price cannot be greater than maximum price.</p>
-        )}
-      </div>
-
-      <div className="products-grid">
-        {isLoading ? (
-          <Loading title="Loading products..." />
-        ) : error ? (
-          <ErrorState message={error} onRetry={refetch} />
-        ) : isPriceRangeValid ? (
-          <EmptyState title="Invalid Price Range" />
-        ) : filteredProducts.length === 0 ? (
-          <EmptyState title="No Products Found" />
-        ) : (
-          filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              id={product.id}
-              image={product.images[0]}
-              title={product.title}
-              price={product.price}
-              category={product.category}
-            />
-          ))
-        )}
-      </div>
-    </>
-  );
+    )}
+  </div>
+);
 }
 
 export default ProductGrid;
