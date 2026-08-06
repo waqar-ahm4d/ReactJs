@@ -35,13 +35,7 @@
   padding: 5px 10px;
   border-radius: 5px;
 }
-.flex {
-  display: flex;
-  /* align-items: center; */
-  /* justify-content: center; */
-  /* gap: 1rem; */
-  /* margin-bottom: 1rem; */
-}
+
 .product-details {
   display: grid;
   grid-template-columns: 1fr 1fr;

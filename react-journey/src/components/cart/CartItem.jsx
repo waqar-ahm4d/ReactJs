@@ -7,7 +7,7 @@ function CartItem({ item }) {
 
   return (
     <>
-      <div className="flex gap-4 border-b p-4">
+      <div className="flex gap-4 border-b px-4 py-2">
         <img
           src={item.images[0]}
           alt={item.title}
@@ -15,8 +15,8 @@ function CartItem({ item }) {
         />
         <div className="flex flex-1 flex-col">
           <h3 className="line-clamp-2 font-medium">{item.title}</h3>
-          <p className="mt-2 font-semibold">${item.price}</p>
-          <div className="my-2 flex items-center justify-between">
+          <p className="mt-1 font-normal">${item.price}</p>
+          <div className="my-1 flex items-center justify-between">
             <QuantitySelector
               quantity={item.quantity}
               onIncrease={() => increaseCartQty(item.id)}

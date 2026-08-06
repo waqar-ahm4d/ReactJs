@@ -15,14 +15,15 @@ function ProductDetails() {
   if (error) return <ErrorState message="Error Occured!" onRetry={refetch} />;
 
   return (
-    <>
-      <div className="product-details">
-        <div className="product-gallery">
-          <ProductImage image={product.images[0]} title={product.title} />
-        </div>
+    <section className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-8 lg:flex-row lg:items-start">
+      <div className="w-full lg:w-1/2">
+        <ProductImage image={product.images[0]} title={product.title} />
+      </div>
+
+      <div className="w-full lg:w-1/2">
         <ProductInfo product={product} />
       </div>
-    </>
+    </section>
   );
 }
 

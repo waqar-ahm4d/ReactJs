@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import useCartContext from "../hooks/useCartContext";
 import QuantitySelector from "../components/QuantitySelector";
 import { Trash2 } from "lucide-react";
+import CartSummary from "../components/cart/ CartSummary";
 
 function Cart() {
   const { cartItems, increaseCartQty, decreaseCartQty, removeFromCart } =
@@ -37,18 +38,18 @@ function Cart() {
             {cartItems.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-5 rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+                className="flex flex-col md:flex-row gap-2 rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
               >
                 <img
                   src={item.images[0]}
                   alt={item.title}
-                  className="h-28 w-28 rounded-lg bg-gray-100 object-contain p-2"
+                  className="h-28 w-28 m-auto rounded-lg bg-gray-100 object-contain p-2"
                 />
 
-                <div className="flex flex-1 flex-col">
+                <div className="flex flex-1 flex-col gap-2">
                   <h3 className="text-lg font-semibold">{item.title}</h3>
 
-                  <p className="mt-2 text-2xl font-bold text-green-600">
+                  <p className="text-xl ">
                     ${item.price}
                   </p>
 
@@ -68,7 +69,7 @@ function Cart() {
                   </div>
                 </div>
 
-                <div className="text-right">
+                <div className="md:text-right flex items-center gap-1">
                   <p className="text-sm text-gray-500">Subtotal</p>
 
                   <p className="text-lg font-semibold">
@@ -80,35 +81,7 @@ function Cart() {
           </div>
 
           {/* Order Summary */}
-
-          <div className="h-fit rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-6 text-2xl font-semibold">Order Summary</h2>
-
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-gray-600">Total Items</span>
-
-              <span className="font-medium">
-                {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-              </span>
-            </div>
-
-            <div className="mb-6 flex items-center justify-between border-t pt-4 text-xl font-bold">
-              <span>Total</span>
-
-              <span>${total.toFixed(2)}</span>
-            </div>
-
-            <button className="w-full rounded-lg bg-black py-3 font-medium text-white transition hover:bg-gray-800">
-              Proceed to Checkout
-            </button>
-
-            <NavLink
-              to="/all-products"
-              className="mt-3 block text-center text-sm text-gray-500 hover:text-black"
-            >
-              Continue Shopping
-            </NavLink>
-          </div>
+          <CartSummary />
         </div>
       )}
     </div>

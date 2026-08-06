@@ -1,9 +1,11 @@
 import { useEffect, useReducer } from "react";
 import { toast } from "react-toastify";
+import { getCoupon } from "../services/coupons";
 
 const initialState = {
   cartItems: [],
   isOpen: false,
+  coupon: null,
 };
 
 function cartReducer(state, action) {
@@ -64,6 +66,12 @@ function cartReducer(state, action) {
     case "CLOSE_CART": {
       return { ...state, isOpen: false };
     }
+    case "APPLY_COUPON": {
+      return { ...state, coupon: action.payload };
+    }
+    case "REMOVE_COUPON": {
+      return { ...state, coupon: null };
+    }
     default:
       return state;
   }
@@ -73,12 +81,20 @@ function useCart() {
   const [state, dispatch] = useReducer(cartReducer, initialState, (initial) => {
     const savedCart = localStorage.getItem("cart");
     if (!savedCart) return initial;
-    return { ...initial, cartItems: JSON.parse(savedCart) };
+    return { ...initial, ...JSON.parse(savedCart) };
   });
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(state.cartItems));
-  }, [state.cartItems]);
+    const persistentState = {
+      cartItems: state.cartItems,
+      coupon: state.coupon,
+    }
+    localStorage.setItem("cart", JSON.stringify(persistentState));
+  }, [state]);
+
+  // useEffect(() => { // saves only cart items not cart summary
+  //   localStorage.setItem("cart", JSON.stringify(state.cartItems));
+  // }, [state.cartItems]);
 
   function findCartItem(productId) {
     return state.cartItems.find((item) => item.id === productId);
@@ -94,7 +110,6 @@ function useCart() {
       toast.success(`${product.title} added to your cart`);
     }
     openCart();
-
   }
 
   function increaseCartQty(productId) {
@@ -112,6 +127,21 @@ function useCart() {
       toast.info(`Quantity Updated`);
     }
   }
+
+  function applyCoupon(code) {
+    const coupon = getCoupon(code);
+
+    if (!coupon) return false;
+
+    dispatch({ type: "APPLY_COUPON", payload: coupon });
+
+    return true;
+  }
+
+  function removeCoupon() {
+    dispatch({ type: "REMOVE_COUPON" });
+  }
+
   function removeFromCart(productId) {
     dispatch({ type: "REMOVE_FROM_CART", payload: productId });
     toast.error("Item removed from cart");
@@ -124,17 +154,50 @@ function useCart() {
     dispatch({ type: "CLOSE_CART" });
   }
 
+  const cartCount = state.cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
 
-  const cartCount = state.cartItems.reduce((total, item) => total + item.quantity, 0);
+  const subtotal = state.cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+
+  let shipping = subtotal >= 100 ? 0 : 10;
+
+  const tax = subtotal * 0.1;
+
+  let discount = 0;
+
+  if (state.coupon) {
+    if (state.coupon.type === "percentage") {
+      discount = Math.min(subtotal * (state.coupon.value / 100), subtotal);
+    } else if (state.coupon.type === "fixed") {
+      discount = Math.min(state.coupon.value, subtotal);
+    } else if (state.coupon.type === "shipping") {
+      shipping = 0;
+    }
+  }
+
+  const total = subtotal + shipping + tax - discount;
 
   return {
     cartItems: state.cartItems,
-    cartCount,
     isOpen: state.isOpen,
+    cartCount,
+    subtotal,
+    shipping,
+    coupon: state.coupon,
+    discount,
+    tax,
+    total,
     addToCart,
     increaseCartQty,
     decreaseCartQty,
     removeFromCart,
+    applyCoupon,
+    removeCoupon,
     openCart,
     closeCart,
   };

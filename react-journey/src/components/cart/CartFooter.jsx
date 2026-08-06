@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import useCartContext from "../../hooks/useCartContext";
+import CartSummary from "./ CartSummary";
 
 function CartFooter() {
   const { cartItems, closeCart } = useCartContext();
@@ -11,8 +12,9 @@ function CartFooter() {
 
   return (
     <>
-      <div className="border-t p-5">
-        <div className="mb-4 flex items-center justify-between text-lg font-semibold">
+      <div className="border-t p-4">
+        <CartSummary />
+        {/* <div className="mb-4 flex items-center justify-between text-lg font-semibold">
           <span>Total</span>
           <span>${total.toFixed(2)} USD</span>
         </div>
@@ -20,7 +22,7 @@ function CartFooter() {
           <button className="rounded-lg bg-black py-3 text-white transition hover:bg-gray-800 ">
             Checkout
           </button>
-        </div>
+        </div> */}
       </div>
     </>
   );
