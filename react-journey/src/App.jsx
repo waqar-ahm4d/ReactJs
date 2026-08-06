@@ -10,6 +10,8 @@ import useCart from "./hooks/useCart";
 import ReducerDemo from "./pages/ReducerDemo";
 import Drawer from "./components/ui/Drawer";
 import CartDrawer from "./components/cart/CartDrawer";
+import Checkout from "./pages/Checkout";
+import Wishlist from "./pages/Wishlist";
 
 function App() {
 
@@ -29,9 +31,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/all-products" element={<AllProducts />} />
         <Route path="products/:id" element={<ProductDetails />} />
-        <Route path="/practice" element={<PracticePage />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/reducer-demo" element={<ReducerDemo />} />
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
     </>
   );

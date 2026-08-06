@@ -2,9 +2,7 @@ import useCartContext from "../../hooks/useCartContext";
 import { X } from "lucide-react";
 
 function CartHeader() {
-  const { cartItems, closeCart } = useCartContext();
-
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const { cartItems, closeCart, cartCount } = useCartContext();
 
   return (
     <>
@@ -13,7 +11,7 @@ function CartHeader() {
           <h2 className="text-xl font-semibold">Your Cart</h2>
         </div>
         <p className="text-sm text-gray-500">
-          {totalItems} item{totalItems !== 1 && "s"}
+          {cartCount} item{cartCount !== 1 && "s"}
         </p>
         <button
           onClick={closeCart}

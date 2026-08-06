@@ -124,8 +124,12 @@ function useCart() {
     dispatch({ type: "CLOSE_CART" });
   }
 
+
+  const cartCount = state.cartItems.reduce((total, item) => total + item.quantity, 0);
+
   return {
     cartItems: state.cartItems,
+    cartCount,
     isOpen: state.isOpen,
     addToCart,
     increaseCartQty,
