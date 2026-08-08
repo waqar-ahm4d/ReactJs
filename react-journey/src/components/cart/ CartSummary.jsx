@@ -28,6 +28,7 @@ function CartSummary() {
     total,
     applyCoupon,
     removeCoupon,
+    closeCart,
   } = useCartContext();
   const [couponCode, setCouponCode] = useState("");
 
@@ -124,6 +125,7 @@ function CartSummary() {
           Proceed to Checkout
         </button>
         <NavLink
+          onClick={closeCart}
           to="/all-products"
           className=" block text-center text-sm text-gray-500 hover:text-black"
         >
