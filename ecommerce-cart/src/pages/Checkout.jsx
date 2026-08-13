@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CheckoutForm from "../components/checkout/CheckoutForm";
 import { validatePhone } from "../services/validatePhone";
 
@@ -17,6 +17,7 @@ const initialCheckout = {
 function Checkout() {
   const [form, setForm] = useState(initialCheckout);
   const [errors, setErrors] = useState({});
+  const inputRefs = useRef({});
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -36,6 +37,8 @@ function Checkout() {
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      const firstError = Object.keys(validationErrors)[0];
+      inputRefs.current[firstError]?.focus();
       return;
     }
     setErrors({});
@@ -126,6 +129,9 @@ function Checkout() {
                 </label>
 
                 <input
+                  ref={(element) => {
+                    inputRefs.current.email = element;
+                  }}
                   id="email"
                   name="email"
                   type="email"
@@ -160,6 +166,9 @@ function Checkout() {
                 </label>
 
                 <input
+                  ref={(element) => {
+                    inputRefs.current.firstName = element;
+                  }}
                   id="firstName"
                   name="firstName"
                   type="text"
@@ -189,6 +198,9 @@ function Checkout() {
                 </label>
 
                 <input
+                  ref={(element) => {
+                    inputRefs.current.lastName = element;
+                  }}
                   id="lastName"
                   name="lastName"
                   type="text"
@@ -216,6 +228,9 @@ function Checkout() {
                 </label>
 
                 <input
+                  ref={(element) => {
+                    inputRefs.current.phone = element;
+                  }}
                   id="phone"
                   name="phone"
                   type="tel"
@@ -255,6 +270,9 @@ function Checkout() {
                   }`}
                 /> */}
                 <select
+                  ref={(element) => {
+                    inputRefs.current.country = element;
+                  }}
                   id="country"
                   name="country"
                   value={form.country}
@@ -289,6 +307,9 @@ function Checkout() {
                 </label>
 
                 <input
+                  ref={(element) => {
+                    inputRefs.current.state = element;
+                  }}
                   id="state"
                   name="state"
                   type="text"
@@ -316,6 +337,9 @@ function Checkout() {
                 </label>
 
                 <input
+                  ref={(element) => {
+                    inputRefs.current.address = element;
+                  }}
                   id="address"
                   name="address"
                   type="text"
@@ -344,6 +368,9 @@ function Checkout() {
                 </label>
 
                 <input
+                  ref={(element) => {
+                    inputRefs.current.city = element;
+                  }}
                   id="city"
                   name="city"
                   type="text"
@@ -371,6 +398,9 @@ function Checkout() {
                 </label>
 
                 <input
+                  ref={(element) => {
+                    inputRefs.current.postalCode = element;
+                  }}
                   id="postalCode"
                   name="postalCode"
                   type="text"
