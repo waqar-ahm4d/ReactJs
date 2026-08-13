@@ -8,7 +8,6 @@ const initialState = {
 function wishlistReducer(state, action) {
   switch (action.type) {
     case "ADD_TO_WISHLIST": {
-      console.log(typeof action.payload);
       const product = action.payload;
       const exists = state.wishlistItems.some((item) => item.id === product.id);
       if (exists) return state;
@@ -38,7 +37,6 @@ function useWishlist() {
       return { ...initial, wishlistItems: JSON.parse(saved) };
     },
   );
-  console.log(state.wishlistItems);
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(state.wishlistItems));
   }, [state.wishlistItems]);
