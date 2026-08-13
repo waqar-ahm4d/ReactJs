@@ -37,8 +37,18 @@ function Checkout() {
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+
       const firstError = Object.keys(validationErrors)[0];
-      inputRefs.current[firstError]?.focus();
+
+      const firstErrorInput = inputRefs.current[firstError];
+
+      firstErrorInput?.focus({ preventScroll: true });
+
+      firstErrorInput?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+
       return;
     }
     setErrors({});
