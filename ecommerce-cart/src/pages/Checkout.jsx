@@ -17,6 +17,8 @@ const initialCheckout = {
 function Checkout() {
   const [form, setForm] = useState(initialCheckout);
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const inputRefs = useRef({});
 
   function handleChange(e) {
@@ -52,7 +54,13 @@ function Checkout() {
       return;
     }
     setErrors({});
-    console.log("Form is valid", form);
+
+    setIsSubmitting(true);
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+      console.log("Processing complete");
+    }, 2000);
   }
 
   function validateForm() {
@@ -433,10 +441,11 @@ function Checkout() {
 
             {/* Submit */}
             <button
+              disabled={isSubmitting}
               type="submit"
-              className="mt-8 w-full rounded-lg bg-black px-6 py-3 font-semibold text-white transition hover:bg-gray-800 sm:w-auto"
+              className="mt-8 w-full rounded-lg bg-black px-6 py-3 font-semibold text-white transition hover:bg-gray-800 sm:w-auto disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
-              Continue to Payment
+              {isSubmitting ? "Processing..." : "Continue to Payment"}
             </button>
           </form>
 
