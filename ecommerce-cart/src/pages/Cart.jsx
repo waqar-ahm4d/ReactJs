@@ -49,9 +49,7 @@ function Cart() {
                 <div className="flex flex-1 flex-col gap-2">
                   <h3 className="text-lg font-semibold">{item.title}</h3>
 
-                  <p className="text-xl ">
-                    ${item.price}
-                  </p>
+                  <p className="text-xl ">${item.price}</p>
 
                   <div className="mt-auto flex flex-wrap items-center justify-between gap-4">
                     <QuantitySelector
@@ -81,7 +79,9 @@ function Cart() {
           </div>
 
           {/* Order Summary */}
-          <CartSummary />
+          <div className="border-t p-4">
+            <CartSummary />
+          </div>
         </div>
       )}
     </div>

@@ -121,9 +121,9 @@ function CartSummary() {
         />
       </div>
       <div className="flex flex-col gap-1 mt-1">
-        <button className=" w-full rounded-lg bg-black py-3 font-semibold text-white transition hover:bg-gray-800">
+        <NavLink onClick={closeCart} to="/checkout" className="text-center w-full rounded-lg bg-black py-3 font-semibold text-white transition hover:bg-gray-800">
           Proceed to Checkout
-        </button>
+        </NavLink>
         <NavLink
           onClick={closeCart}
           to="/all-products"
