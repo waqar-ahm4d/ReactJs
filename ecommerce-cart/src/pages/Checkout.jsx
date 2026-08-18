@@ -7,8 +7,12 @@ import { createOrder } from "../services/order";
 import { useState } from "react";
 import OrderReview from "../components/checkout/OrderReview";
 import PaymentForm from "../components/checkout/PaymentForm";
+import OrderConfirmation from "../components/checkout/OrderConfirmation";
 
 function Checkout() {
+  const [order, setOrder] = useState(null);
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+
   const [step, setStep] = useState("information");
 
   const { cartItems, subtotal, shipping, discount, tax, total, coupon } =
@@ -31,19 +35,29 @@ function Checkout() {
     if (!isValid) return;
 
     setStep("review");
-
-    // const order = createOrder({
-    //   form,
-    //   cartItems,
-    //   subtotal,
-    //   shipping,
-    //   discount,
-    //   tax,
-    //   total,
-    //   coupon,
-    // });
-    // console.log("Order", order);
   }
+
+  function handlePlaceOrder() {
+    setIsCreatingOrder(true);
+    setStep("confirmation");
+
+    setTimeout(() => {
+      const newOrder = createOrder({
+        form,
+        cartItems,
+        subtotal,
+        shipping,
+        discount,
+        tax,
+        total,
+        coupon,
+      });
+      setOrder(newOrder);
+      setIsCreatingOrder(false);
+    }, 2000);
+  }
+
+  
 
   if (cartItems.length === 0) {
     return (
@@ -92,7 +106,14 @@ function Checkout() {
           {step === "payment" && (
             <PaymentForm
               onBack={() => setStep("review")}
-              onPay={() => setStep("confirmation")}
+              onPay={handlePlaceOrder}
+            />
+          )}
+
+          {step === "confirmation" && (
+            <OrderConfirmation
+              order={order}
+              isCreatingOrder={isCreatingOrder}
             />
           )}
           {/* Order Summary */}

@@ -53,7 +53,7 @@ function useCheckout() {
 
     setTimeout(() => {
       setIsSubmitting(false);
-      console.log("Processing Complete");
+      // console.log("Processing Complete");
     }, 2000);
 
     return true;

@@ -8,7 +8,8 @@ export function createOrder({
   total,
   coupon,
 }) {
-  return {
+  const order = {
+    id: `ORD-${Date.now()}`,
     customer: {
       email: form.email,
       firstName: form.firstName,
@@ -33,4 +34,6 @@ export function createOrder({
       ? { code: coupon.code, type: coupon.type, value: coupon.value }
       : null,
   };
+
+  return order;
 }
