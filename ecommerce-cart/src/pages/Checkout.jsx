@@ -12,6 +12,7 @@ import OrderConfirmation from "../components/checkout/OrderConfirmation";
 function Checkout() {
   const [order, setOrder] = useState(null);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [orderError, setOrderError] = useState(null);
 
   const [step, setStep] = useState("information");
 
@@ -37,12 +38,13 @@ function Checkout() {
     setStep("review");
   }
 
-  function handlePlaceOrder() {
+  async function handlePlaceOrder() {
     setIsCreatingOrder(true);
+    setOrderError(null);
     setStep("confirmation");
-
-    setTimeout(() => {
-      const newOrder = createOrder({
+    
+    try {
+      const newOrder = await createOrder({
         form,
         cartItems,
         subtotal,
@@ -52,12 +54,16 @@ function Checkout() {
         total,
         coupon,
       });
-      setOrder(newOrder);
-      setIsCreatingOrder(false);
-    }, 2000);
-  }
+      await setOrder(newOrder);
+    } catch (error) {
+      console.error("Order creation failed", error);
 
-  
+      setOrderError("We couldn't create your order. Please try again.");
+
+    } finally {
+      setIsCreatingOrder(false);
+    }
+  }
 
   if (cartItems.length === 0) {
     return (
@@ -114,6 +120,7 @@ function Checkout() {
             <OrderConfirmation
               order={order}
               isCreatingOrder={isCreatingOrder}
+              orderError={orderError}
             />
           )}
           {/* Order Summary */}

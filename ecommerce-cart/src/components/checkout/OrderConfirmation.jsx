@@ -1,7 +1,7 @@
 import { Check, CheckCheck, Copy, Loader2 } from "lucide-react";
 import { useState } from "react";
 
-function OrderConfirmation({ order, isCreatingOrder}) {
+function OrderConfirmation({ order, isCreatingOrder, orderError}) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopyOrderId() {
@@ -31,6 +31,26 @@ function OrderConfirmation({ order, isCreatingOrder}) {
     );
   }
 
+  if (orderError) {
+    return (
+      <>
+        <div className="rounded-xl border bg-white p-8 text-center shadow-sm">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-xl text-red-600">
+            !
+          </div>
+
+          <h1 className="text-2xl font-bold">Something went wrong</h1>
+
+          <p className="mt-2 text-gray-600">{orderError}</p>
+
+          <button className="mt-6 rounded-lg bg-black px-6 py-3 font-semibold text-white hover:bg-gray-800">
+            Try Again
+          </button>
+        </div>
+      </>
+    );
+  }
+
   if (!order) {
     return null;
   }
@@ -47,8 +67,8 @@ function OrderConfirmation({ order, isCreatingOrder}) {
       <div className="mt-6 rounded-lg bg-gray-50 p-5 text-left">
         <p className="text-sm text-gray-500">Order Number:</p>
 
-        <div className="mt-1 flex items-center gap-2">
-          <p className="mt-1 font-semibold">{order.id}</p>
+        <div  className="mt-1 flex items-center gap-2">
+          <p onClick={handleCopyOrderId} className="mt-1 font-semibold border-4 border-dashed border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-white transition-colors px-4 py-3 rounded-lg text-slate-700 cursor-pointer select-all break-all">{order.id}</p>
 
           <button
             type="button"
