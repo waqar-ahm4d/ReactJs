@@ -9,7 +9,7 @@ function CheckoutForm({
 }) {
   return (
     <>
-      <div className="grid gap-8 lg:grid-cols-3">
+      <div className="grid">
         <form
           noValidate
           onSubmit={handleSubmit}

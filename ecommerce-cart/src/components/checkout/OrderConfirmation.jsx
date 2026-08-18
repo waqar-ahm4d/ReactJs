@@ -1,7 +1,7 @@
 import { Check, CheckCheck, Copy, Loader2 } from "lucide-react";
 import { useState } from "react";
 
-function OrderConfirmation({ order, isCreatingOrder, orderError}) {
+function OrderConfirmation({ order, isCreatingOrder, orderError }) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopyOrderId() {
@@ -65,25 +65,31 @@ function OrderConfirmation({ order, isCreatingOrder, orderError}) {
       <p className="mt-2 text-gray-600">Thank you for your purchase.</p>
 
       <div className="mt-6 rounded-lg bg-gray-50 p-5 text-left">
-        <p className="text-sm text-gray-500">Order Number:</p>
+        <div className="flex flex-col justify-between items-center mb-5">
+          <p className="text-lg text-gray-500 mb-2">Order Number:</p>
+          <div className="mt-1 flex items-center gap-2">
+            <p
+              onClick={handleCopyOrderId}
+              className="mt-1 font-semibold border-4 border-dashed border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-white transition-colors px-4 py-3 rounded-lg text-slate-700 cursor-pointer select-all break-all"
+            >
+              {order.id}
+            </p>
 
-        <div  className="mt-1 flex items-center gap-2">
-          <p onClick={handleCopyOrderId} className="mt-1 font-semibold border-4 border-dashed border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-white transition-colors px-4 py-3 rounded-lg text-slate-700 cursor-pointer select-all break-all">{order.id}</p>
-
-          <button
-            type="button"
-            className="rounded-md p-1.5 text-gray-500 transition hover:bg-gray-200 hover:text-black"
-            onClick={handleCopyOrderId}
-          >
-            {copied ? <Check size={32} /> : <Copy size={32} />}
-          </button>
+            <button
+              type="button"
+              className="rounded-md p-1.5 text-gray-500 transition hover:bg-gray-200 hover:text-black"
+              onClick={handleCopyOrderId}
+            >
+              {copied ? <Check size={32} /> : <Copy size={32} />}
+            </button>
+          </div>
         </div>
-
-        <p className="mt-4 text-sm text-gray-500">Total:</p>
-
-        <p className="mt-1 text-xl font-bold">
-          ${Number(order.pricing.total.toFixed(2))}
-        </p>
+        <div className="flex flex-col justify-between items-center">
+          <p className="mt-4 text-lg text-gray-500">Total:</p>
+          <p className="mt-1 text-3xl font-bold">
+            ${Number(order.pricing.total.toFixed(2))}
+          </p>
+        </div>
       </div>
     </div>
   );

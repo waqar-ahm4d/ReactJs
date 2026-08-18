@@ -42,7 +42,7 @@ function Checkout() {
     setIsCreatingOrder(true);
     setOrderError(null);
     setStep("confirmation");
-    
+
     try {
       const newOrder = await createOrder({
         form,
@@ -59,7 +59,6 @@ function Checkout() {
       console.error("Order creation failed", error);
 
       setOrderError("We couldn't create your order. Please try again.");
-
     } finally {
       setIsCreatingOrder(false);
     }
@@ -90,52 +89,56 @@ function Checkout() {
       <div className="mx-auto max-w-7xl px-4 py-10">
         <h1 className="mb-8 text-3xl font-bold">Checkout</h1>
 
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Checkout Form */}
-          {step === "information" && (
-            <CheckoutForm
-              form={form}
-              errors={errors}
-              isSubmitting={isSubmitting}
-              inputRefs={inputRefs}
-              handleChange={handleChange}
-              handleSubmit={handleOrderSubmit}
-            />
-          )}
-          {step === "review" && (
-            <OrderReview
-              form={form}
-              onBack={() => setStep("information")}
-              onContinue={() => setStep("payment")}
-            />
-          )}
-          {step === "payment" && (
-            <PaymentForm
-              onBack={() => setStep("review")}
-              onPay={handlePlaceOrder}
-            />
-          )}
-
-          {step === "confirmation" && (
+        {step === "confirmation" ? (
+          <div className="grid lg:max-w-2xl mx-auto">
             <OrderConfirmation
               order={order}
               isCreatingOrder={isCreatingOrder}
               orderError={orderError}
             />
-          )}
-          {/* Order Summary */}
-          <aside className="lg:sticky lg:top-24 lg:self-start">
-            <CheckoutSummary
-              cartItems={cartItems}
-              subtotal={subtotal}
-              shipping={shipping}
-              discount={discount}
-              tax={tax}
-              total={total}
-              coupon={coupon}
-            />
-          </aside>
-        </div>
+          </div>
+        ) : (
+          <div className="grid gap-8 lg:grid-cols-2">
+            <div>
+            {/* Checkout Form */}
+            {step === "information" && (
+              <CheckoutForm
+                form={form}
+                errors={errors}
+                isSubmitting={isSubmitting}
+                inputRefs={inputRefs}
+                handleChange={handleChange}
+                handleSubmit={handleOrderSubmit}
+              />
+            )}
+            {step === "review" && (
+              <OrderReview
+                form={form}
+                onBack={() => setStep("information")}
+                onContinue={() => setStep("payment")}
+              />
+            )}
+            {step === "payment" && (
+              <PaymentForm
+                onBack={() => setStep("review")}
+                onPay={handlePlaceOrder}
+              />
+            )}
+            </div>
+            {/* Order Summary */}
+            <aside className="lg:sticky lg:top-24 lg:self-start">
+              <CheckoutSummary
+                cartItems={cartItems}
+                subtotal={subtotal}
+                shipping={shipping}
+                discount={discount}
+                tax={tax}
+                total={total}
+                coupon={coupon}
+              />
+            </aside>
+          </div>
+        )}
       </div>
     </>
   );
