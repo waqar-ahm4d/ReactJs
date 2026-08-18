@@ -1,9 +1,12 @@
-import useCheckout from "../../hooks/useCheckout";
 
-function CheckoutForm({ formElements }) {
-
-  const { form, errors, isSubmitting, inputRefs, handleChange, handleSubmit } =
-    useCheckout();
+function CheckoutForm({
+  form,
+  errors,
+  isSubmitting,
+  inputRefs,
+  handleChange,
+  handleSubmit,
+}) {
   return (
     <>
       <div className="grid gap-8 lg:grid-cols-3">

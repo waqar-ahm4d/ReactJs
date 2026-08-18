@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { validatePhone } from "../services/validatePhone";
+import { createOrder } from "../services/order";
 
 const initialCheckout = {
   email: "",
@@ -30,28 +31,32 @@ function useCheckout() {
     });
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  function validateAndSubmit() {
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
 
-    const validateErrors = validateForm();
-    if (Object.keys(validateErrors).length > 0) {
-      setErrors(validateErrors);
-
-      const firstError = Object.keys(validateErrors)[0];
+      const firstError = Object.keys(validationErrors)[0];
       const firstErrorInput = inputRefs.current[firstError];
 
       firstErrorInput?.focus({ preventScroll: true });
 
-      firstErrorInput?.scrollIntoView({ behavior: "smooth", block: "center" });
-
-      return;
+      firstErrorInput?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      return false;
     }
     setErrors({});
+
     setIsSubmitting(true);
+
     setTimeout(() => {
       setIsSubmitting(false);
       console.log("Processing Complete");
     }, 2000);
+
+    return true;
   }
 
   function validateForm() {
@@ -101,7 +106,14 @@ function useCheckout() {
     return newErrors;
   }
 
-  return { form, errors, isSubmitting, inputRefs, handleChange, handleSubmit };
+  return {
+    form,
+    errors,
+    isSubmitting,
+    inputRefs,
+    handleChange,
+    validateAndSubmit,
+  };
 }
 
 export default useCheckout;
